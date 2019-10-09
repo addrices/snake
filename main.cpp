@@ -40,6 +40,11 @@ int main(int argc, char *argv[]){
     interface.show();
     char ch = ' ';
     int a = 23;
+    int level = 5;
+    if(argc > 0){
+        level = *argv[1] - '1' + 1;
+    }
+    mvprintw(29,2,"level = %d",level);
     while(1){
         refresh();
         if(kbhit()){
@@ -49,7 +54,7 @@ int main(int argc, char *argv[]){
             interface.input(ch);
         }
         interface.show();
-        usleep(100000);
+        usleep(160000 - 10000 * level);
         interface.next_second();
     }
     endwin();
