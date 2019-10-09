@@ -47,7 +47,7 @@ int main(int argc, char *argv[]){
     mvprintw(29,2,"level = %d",level);
     while(1){
         refresh();
-        if(kbhit()){
+        while(kbhit()){
             ch = getchar();
             mvprintw(28,2,"%c",ch);
             refresh();

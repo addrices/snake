@@ -1,25 +1,51 @@
 #include <ncurses.h>
 #include "snake.hpp"
 
-snake::snake(){
-    snake_init();
+snake::snake(int i){
+    snake_init(i);
 }
 
-void snake::snake_init(){
+void snake::snake_init(int i){
     node* a = new node;
     node* b = new node;
     node* c = new node;
     a->next = b;
     b->next = c;
     c->next = NULL;
-    a->col = WIDTH/2;
-    b->col = a->col + 1;
-    c->col = b->col + 1;
-    a->row = HIGH/2;
+
+    if(i == 1){
+        a->col = WIDTH/2;
+        b->col = a->col + 1;
+        c->col = b->col + 1;
+        a->row = HIGH/2;
+        state = LEFT;
+        p1_p2 = true;
+    }
+    else{
+        a->col = WIDTH/2;
+        b->col = a->col - 1;
+        c->col = b->col - 1;
+        a->row = HIGH/2 + 1;
+        state = RIGHT;
+        p1_p2 = false;
+    }
     b->row = a->row;
     c->row = b->row;
     head = a;
-    state = LEFT;
+    score = 0;
+}
+
+node* snake::get_head(){
+    return head;
+}
+
+int snake::get_score(){
+    return score;
+}
+
+void snake::add_score(int s){
+    score += s;
+    return;
 }
 
 void snake::next_second(bool flag){
@@ -54,17 +80,32 @@ void snake::show(){
 }
 
 void snake::input(char ch){
-    if(ch == 'w' && state != DOWN){
-        state = UP;
-    }
-    else if(ch == 's' && state != UP){
-        state = DOWN;
-    }
-    else if(ch == 'a' && state != RIGHT){
-        state = LEFT;
-    }
-    else if(ch == 'd' && state != LEFT){
-        state = RIGHT;
+    if(p1_p2 == true){
+        if(ch == 'w' && state != DOWN){
+            state = UP;
+        }
+        else if(ch == 's' && state != UP){
+            state = DOWN;
+        }
+        else if(ch == 'a' && state != RIGHT){
+            state = LEFT;
+        }
+        else if(ch == 'd' && state != LEFT){
+            state = RIGHT;
+        }
+    }else{
+        if(ch == 'i' && state != DOWN){
+            state = UP;
+        }
+        else if(ch == 'k' && state != UP){
+            state = DOWN;
+        }
+        else if(ch == 'j' && state != RIGHT){
+            state = LEFT;
+        }
+        else if(ch == 'l' && state != LEFT){
+            state = RIGHT;
+        }        
     }
 }
 
@@ -98,6 +139,18 @@ void snake::snake_destory(){
         current = n;
     }
     return;
+}
+
+bool snake::another_death(const node* const n){
+    node* current = head;
+    while(current != NULL){
+        if(current->col == n->col && current->row == n->row){
+            snake_destory();
+            return true;
+        }
+        current = current->next;
+    }
+    return false;
 }
 
 snake::~snake(){
